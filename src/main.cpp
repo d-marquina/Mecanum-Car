@@ -49,15 +49,6 @@ void test3();
 void setup() {
   pinMode(ONBOARD_LED,OUTPUT);
 
-  /*pinMode(D1_I1, OUTPUT);
-  pinMode(D1_I2, OUTPUT);
-  pinMode(D1_I3, OUTPUT);
-  pinMode(D1_I4, OUTPUT);
-  pinMode(D2_I1, OUTPUT);
-  pinMode(D2_I2, OUTPUT);
-  pinMode(D2_I3, OUTPUT);
-  pinMode(D2_I4, OUTPUT);//*/
-
   ledcSetup(channel11, freq, resolution);
   ledcSetup(channel12, freq, resolution);
   ledcSetup(channel13, freq, resolution);
@@ -78,8 +69,7 @@ void setup() {
 
   setPWMs(init_pwms);
 
-  Dabble.begin("Mecanum Car");       //set bluetooth name of your device
-  Serial.begin(115200); 
+  Dabble.begin("Mecanum Car"); //set bluetooth name of your device
 }
 
 void loop() {
@@ -91,84 +81,97 @@ void loop() {
 
   if (GamePad.isUpPressed()){
     forward();
-    delay(800);
+    delay(350);
     stopped();
   }
 
   if (GamePad.isDownPressed()){
     backwards();
-    delay(800);
+    delay(350);
     stopped();
   }
 
   if (GamePad.isLeftPressed()){
     left();
-    delay(800);
+    delay(350);
     stopped();
   }
 
   if (GamePad.isRightPressed()){
     right();
-    delay(800);
+    delay(350);
     stopped();
   }
 
   if (GamePad.isSquarePressed()){
     ccw();
-    delay(800);
+    delay(150);
     stopped();
   }
 
   if (GamePad.isCirclePressed()){
     cw();
-    delay(800);
+    delay(150);
     stopped();
   }
 
-  int a = GamePad.getAngle();
-  Serial.print("Angle: ");
-  Serial.print(a);
-  Serial.print('\t');
-  int b = GamePad.getRadius();  
-  Serial.print("Radius: ");
-  Serial.print(b);
-  Serial.print('\t');
-  float c = GamePad.getXaxisData();
-  Serial.print("x_axis: ");
-  Serial.print(c);
-  Serial.print('\t');
-  float d = GamePad.getYaxisData();
-  Serial.print("y_axis: ");
-  Serial.println(d);
-  Serial.println();
+  int joystick_ang = GamePad.getAngle();
+  int joystick_rad = GamePad.getRadius();
 
-  if (b>4){
-    if (a<30){
+  if (joystick_rad>3){
+    if (joystick_ang<30){
       // Move Right
+      right();
+      delay(350);
+      stopped();
     }
-    else if (a<75){
+    else if (joystick_ang<60){
       // Move FR
+      fr();
+      delay(350);
+      stopped();
     }
-    else if (a<120){
+    else if (joystick_ang<105){
       // Move Forward
+      forward();
+      delay(350);
+      stopped();
     }
-    else if (a<165){
+    else if (joystick_ang<135){
       // Move FL
+      fl();
+      delay(350);
+      stopped();
     }
-    else if (a<210){
+    else if (joystick_ang<210){
       // Move Left
+      left();
+      delay(350);
+      stopped();
     }
-    else if (a<255){
+    else if (joystick_ang<225){
       // Move BL
+      bl();
+      delay(350);
+      stopped();
     }
-    else if (a<300){
+    else if (joystick_ang<300){
       // Move Backwards
+      backwards();
+      delay(350);
+      stopped();
     }
-    else if (a<345){
+    else if (joystick_ang<330){
       // Move BR
+      br();
+      delay(350);
+      stopped();
     }
     else {
       // Move Right
+      right();
+      delay(350);
+      stopped();
     }
   }
 }
@@ -227,199 +230,59 @@ void test3(){
 void stopped(){
   int pwms[8] = {0, 0, 0, 0, 0, 0, 0, 0};
   setPWMs(pwms);
-  /*ledcWrite(channel11, 0);
-  ledcWrite(channel12, 0);
-  ledcWrite(channel13, 0);
-  ledcWrite(channel14, 0);*/
-  /*digitalWrite(D1_I1, LOW);
-  digitalWrite(D1_I2, LOW);
-  digitalWrite(D1_I3, LOW);
-  digitalWrite(D1_I4, LOW);
-  digitalWrite(D2_I1, LOW);
-  digitalWrite(D2_I2, LOW);
-  digitalWrite(D2_I3, LOW);
-  digitalWrite(D2_I4, LOW);//*/
 }
 
 void forward(){
   int pwms[8] = {200, 0, 0, 200, 0, 200, 200, 0};
   setPWMs(pwms);
-  /*ledcWrite(channel11, 200);
-  ledcWrite(channel12, 0);
-  ledcWrite(channel13, 0);
-  ledcWrite(channel14, 200);*/
-  /*digitalWrite(D1_I1, HIGH);
-  digitalWrite(D1_I2, LOW);
-  digitalWrite(D1_I3, LOW);
-  digitalWrite(D1_I4, HIGH);
-  digitalWrite(D2_I1, LOW);
-  digitalWrite(D2_I2, HIGH);
-  digitalWrite(D2_I3, HIGH);
-  digitalWrite(D2_I4, LOW);//*/
 }
 
 void backwards(){
   int pwms[8] = {0, 200, 200, 0, 200, 0, 0, 200};
   setPWMs(pwms);
-  /*ledcWrite(channel11, 0);
-  ledcWrite(channel12, 200);
-  ledcWrite(channel13, 200);
-  ledcWrite(channel14, 0);*/
-  /*digitalWrite(D1_I1, LOW);
-  digitalWrite(D1_I2, HIGH);
-  digitalWrite(D1_I3, HIGH);
-  digitalWrite(D1_I4, LOW);
-  digitalWrite(D2_I1, HIGH);
-  digitalWrite(D2_I2, LOW);
-  digitalWrite(D2_I3, LOW);
-  digitalWrite(D2_I4, HIGH);//*/
 }
 
 void left(){
   int pwms[8] = {0, 200, 0, 200, 200, 0, 200, 0};
   setPWMs(pwms);
-  /*ledcWrite(channel11, 0);
-  ledcWrite(channel12, 200);
-  ledcWrite(channel13, 0);
-  ledcWrite(channel14, 200);*/
-  /*digitalWrite(D1_I1, LOW);
-  digitalWrite(D1_I2, HIGH);
-  digitalWrite(D1_I3, LOW);
-  digitalWrite(D1_I4, HIGH);
-  digitalWrite(D2_I1, HIGH);
-  digitalWrite(D2_I2, LOW);
-  digitalWrite(D2_I3, HIGH);
-  digitalWrite(D2_I4, LOW);//*/
 }
 
 void right(){
   int pwms[8] = {200, 0, 200, 0, 0, 200, 0, 200};
   setPWMs(pwms);
-  /*ledcWrite(channel11, 200);
-  ledcWrite(channel12, 0);
-  ledcWrite(channel13, 200);
-  ledcWrite(channel14, 0);*/
-  /*digitalWrite(D1_I1, HIGH);
-  digitalWrite(D1_I2, LOW);
-  digitalWrite(D1_I3, HIGH);
-  digitalWrite(D1_I4, LOW);
-  digitalWrite(D2_I1, LOW);
-  digitalWrite(D2_I2, HIGH);
-  digitalWrite(D2_I3, LOW);
-  digitalWrite(D2_I4, HIGH);//*/
 }
 
 void cw(){
   int pwms[8] = {200, 0, 200, 0, 200, 0, 200, 0};
   setPWMs(pwms);
-  /*ledcWrite(channel11, 200);
-  ledcWrite(channel12, 0);
-  ledcWrite(channel13, 200);
-  ledcWrite(channel14, 0);*/
-  /*digitalWrite(D1_I1, HIGH);
-  digitalWrite(D1_I2, LOW);
-  digitalWrite(D1_I3, HIGH);
-  digitalWrite(D1_I4, LOW);
-  digitalWrite(D2_I1, HIGH);
-  digitalWrite(D2_I2, LOW);
-  digitalWrite(D2_I3, HIGH);
-  digitalWrite(D2_I4, LOW);//*/
 }
 
 void ccw(){
   int pwms[8] = {0, 200, 0, 200, 0, 200, 0, 200};
   setPWMs(pwms);
-  /*ledcWrite(channel11, 0);
-  ledcWrite(channel12, 200);
-  ledcWrite(channel13, 0);
-  ledcWrite(channel14, 200);*/
-  /*digitalWrite(D1_I1, LOW);
-  digitalWrite(D1_I2, HIGH);
-  digitalWrite(D1_I3, LOW);
-  digitalWrite(D1_I4, HIGH);
-  digitalWrite(D2_I1, LOW);
-  digitalWrite(D2_I2, HIGH);
-  digitalWrite(D2_I3, LOW);
-  digitalWrite(D2_I4, HIGH);//*/
 }
 
 void fl(){
   int pwms[8] = {0, 0, 0, 200, 0, 0, 200, 0};
   setPWMs(pwms);
-  /*ledcWrite(channel11, 0);
-  ledcWrite(channel12, 0);
-  ledcWrite(channel13, 0);
-  ledcWrite(channel14, 200);*/
-  /*digitalWrite(D1_I1, LOW);
-  digitalWrite(D1_I2, LOW);
-  digitalWrite(D1_I3, LOW);
-  digitalWrite(D1_I4, HIGH);
-  digitalWrite(D2_I1, LOW);
-  digitalWrite(D2_I2, LOW);
-  digitalWrite(D2_I3, HIGH);
-  digitalWrite(D2_I4, LOW);//*/
 }
 
 void fr(){
   int pwms[8] = {200, 0, 0, 0, 0, 200, 0, 0};
   setPWMs(pwms);
-  /*ledcWrite(channel11, 200);
-  ledcWrite(channel12, 0);
-  ledcWrite(channel13, 0);
-  ledcWrite(channel14, 0);*/
-  /*digitalWrite(D1_I1, HIGH);
-  digitalWrite(D1_I2, LOW);
-  digitalWrite(D1_I3, LOW);
-  digitalWrite(D1_I4, LOW);
-  digitalWrite(D2_I1, LOW);
-  digitalWrite(D2_I2, HIGH);
-  digitalWrite(D2_I3, LOW);
-  digitalWrite(D2_I4, LOW);//*/
 }
 
 void bl(){
   int pwms[8] = {0, 200, 0, 0, 200, 0, 0, 0};
   setPWMs(pwms);
-  /*ledcWrite(channel11, 0);
-  ledcWrite(channel12, 200);
-  ledcWrite(channel13, 0);
-  ledcWrite(channel14, 0);*/
-  /*digitalWrite(D1_I1, LOW);
-  digitalWrite(D1_I2, HIGH);
-  digitalWrite(D1_I3, LOW);
-  digitalWrite(D1_I4, LOW);
-  digitalWrite(D2_I1, HIGH);
-  digitalWrite(D2_I2, LOW);
-  digitalWrite(D2_I3, LOW);
-  digitalWrite(D2_I4, LOW);//*/
 }
 
 void br(){
   int pwms[8] = {0, 0, 200, 0, 0, 0, 0, 200};
   setPWMs(pwms);
-  /*ledcWrite(channel11, 0);
-  ledcWrite(channel12, 0);
-  ledcWrite(channel13, 200);
-  ledcWrite(channel14, 0);*/
-  /*digitalWrite(D1_I1, LOW);
-  digitalWrite(D1_I2, LOW);
-  digitalWrite(D1_I3, HIGH);
-  digitalWrite(D1_I4, LOW);
-  digitalWrite(D2_I1, LOW);
-  digitalWrite(D2_I2, LOW);
-  digitalWrite(D2_I3, LOW);
-  digitalWrite(D2_I4, HIGH);//*/
 }
 
-void setPWMs(int pwms[8]){  
-  /*digitalWrite(D1_I1, LOW);
-  digitalWrite(D1_I2, LOW);
-  digitalWrite(D1_I3, LOW);
-  digitalWrite(D1_I4, LOW);
-  digitalWrite(D2_I1, LOW);
-  digitalWrite(D2_I2, LOW);
-  digitalWrite(D2_I3, LOW);
-  digitalWrite(D2_I4, LOW);//*/
+void setPWMs(int pwms[8]){
   ledcWrite(channel11, pwms[0]);
   ledcWrite(channel12, pwms[1]);
   ledcWrite(channel13, pwms[2]);
@@ -427,5 +290,5 @@ void setPWMs(int pwms[8]){
   ledcWrite(channel21, pwms[4]);
   ledcWrite(channel22, pwms[5]);
   ledcWrite(channel23, pwms[6]);
-  ledcWrite(channel24, pwms[7]);//*/
+  ledcWrite(channel24, pwms[7]);
 }
