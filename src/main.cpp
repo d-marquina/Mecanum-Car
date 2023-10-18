@@ -1,4 +1,7 @@
 #include <Arduino.h>
+#define CUSTOM_SETTINGS
+#define INCLUDE_GAMEPAD_MODULE
+#include <DabbleESP32.h>
 
 #define ONBOARD_LED  2
 #define D1_I1 32
@@ -46,6 +49,15 @@ void test3();
 void setup() {
   pinMode(ONBOARD_LED,OUTPUT);
 
+  /*pinMode(D1_I1, OUTPUT);
+  pinMode(D1_I2, OUTPUT);
+  pinMode(D1_I3, OUTPUT);
+  pinMode(D1_I4, OUTPUT);
+  pinMode(D2_I1, OUTPUT);
+  pinMode(D2_I2, OUTPUT);
+  pinMode(D2_I3, OUTPUT);
+  pinMode(D2_I4, OUTPUT);//*/
+
   ledcSetup(channel11, freq, resolution);
   ledcSetup(channel12, freq, resolution);
   ledcSetup(channel13, freq, resolution);
@@ -63,43 +75,102 @@ void setup() {
   ledcAttachPin(D2_I2, channel22);
   ledcAttachPin(D2_I3, channel23);
   ledcAttachPin(D2_I4, channel24);//*/
-  
-  /*pinMode(D1_I1, OUTPUT);
-  pinMode(D1_I2, OUTPUT);
-  pinMode(D1_I3, OUTPUT);
-  pinMode(D1_I4, OUTPUT);
-  pinMode(D2_I1, OUTPUT);
-  pinMode(D2_I2, OUTPUT);
-  pinMode(D2_I3, OUTPUT);
-  pinMode(D2_I4, OUTPUT);//*/
+
+  setPWMs(init_pwms);
+
+  Dabble.begin("Mecanum Car");       //set bluetooth name of your device
+  Serial.begin(115200); 
 }
 
 void loop() {
-  /*delay(1000);
-  digitalWrite(ONBOARD_LED,HIGH);
-  delay(100);
-  digitalWrite(ONBOARD_LED,LOW);*/
-
   //test1();
   //test2();
-  test3();
+  //test3();
 
-  /*for(int dutyCycle = 0; dutyCycle <= 255; dutyCycle++){   
-    // changing the LED brightness with PWM
-    ledcWrite(ledChannel, dutyCycle);
-    delay(50);
-  }*/
+  Dabble.processInput();
 
-  /*ledcWrite(channel11, 200);
-  ledcWrite(channel12, 0);
-  ledcWrite(channel13, 0);
-  ledcWrite(channel14, 200);
-  delay(1500);
-  ledcWrite(channel11, 0);
-  ledcWrite(channel12, 0);
-  ledcWrite(channel13, 0);
-  ledcWrite(channel14, 0);
-  delay(1500);*/
+  if (GamePad.isUpPressed()){
+    forward();
+    delay(800);
+    stopped();
+  }
+
+  if (GamePad.isDownPressed()){
+    backwards();
+    delay(800);
+    stopped();
+  }
+
+  if (GamePad.isLeftPressed()){
+    left();
+    delay(800);
+    stopped();
+  }
+
+  if (GamePad.isRightPressed()){
+    right();
+    delay(800);
+    stopped();
+  }
+
+  if (GamePad.isSquarePressed()){
+    ccw();
+    delay(800);
+    stopped();
+  }
+
+  if (GamePad.isCirclePressed()){
+    cw();
+    delay(800);
+    stopped();
+  }
+
+  int a = GamePad.getAngle();
+  Serial.print("Angle: ");
+  Serial.print(a);
+  Serial.print('\t');
+  int b = GamePad.getRadius();  
+  Serial.print("Radius: ");
+  Serial.print(b);
+  Serial.print('\t');
+  float c = GamePad.getXaxisData();
+  Serial.print("x_axis: ");
+  Serial.print(c);
+  Serial.print('\t');
+  float d = GamePad.getYaxisData();
+  Serial.print("y_axis: ");
+  Serial.println(d);
+  Serial.println();
+
+  if (b>4){
+    if (a<30){
+      // Move Right
+    }
+    else if (a<75){
+      // Move FR
+    }
+    else if (a<120){
+      // Move Forward
+    }
+    else if (a<165){
+      // Move FL
+    }
+    else if (a<210){
+      // Move Left
+    }
+    else if (a<255){
+      // Move BL
+    }
+    else if (a<300){
+      // Move Backwards
+    }
+    else if (a<345){
+      // Move BR
+    }
+    else {
+      // Move Right
+    }
+  }
 }
 
 void test1(){
@@ -340,7 +411,15 @@ void br(){
   digitalWrite(D2_I4, HIGH);//*/
 }
 
-void setPWMs(int pwms[8]){
+void setPWMs(int pwms[8]){  
+  /*digitalWrite(D1_I1, LOW);
+  digitalWrite(D1_I2, LOW);
+  digitalWrite(D1_I3, LOW);
+  digitalWrite(D1_I4, LOW);
+  digitalWrite(D2_I1, LOW);
+  digitalWrite(D2_I2, LOW);
+  digitalWrite(D2_I3, LOW);
+  digitalWrite(D2_I4, LOW);//*/
   ledcWrite(channel11, pwms[0]);
   ledcWrite(channel12, pwms[1]);
   ledcWrite(channel13, pwms[2]);
@@ -348,5 +427,5 @@ void setPWMs(int pwms[8]){
   ledcWrite(channel21, pwms[4]);
   ledcWrite(channel22, pwms[5]);
   ledcWrite(channel23, pwms[6]);
-  ledcWrite(channel24, pwms[7]);
+  ledcWrite(channel24, pwms[7]);//*/
 }
