@@ -10,8 +10,11 @@
 #define D1_I4 26
 #define D2_I1 13
 #define D2_I2 12
-#define D2_I3 14
+#define D2_I3 18
 #define D2_I4 27
+
+#define STEP_PIN 21
+#define DIR_PIN 19
 
 const int freq = 15000;
 const int resolution = 8;
@@ -25,6 +28,9 @@ const int channel23 = 6;
 const int channel24 = 7;
 
 int init_pwms[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+int joystick_ang = 0;
+int joystick_rad = 0;
 
 void setPWMs(int pwms[8]);
 
@@ -40,14 +46,18 @@ void fr();
 void bl();
 void br();
 
+void forkliftUp();
+void forkliftDown();
+
 void test1();
 void test2();
 void test3();
-
-
+void test4();
 
 void setup() {
   pinMode(ONBOARD_LED,OUTPUT);
+  pinMode(STEP_PIN, OUTPUT);
+  pinMode(DIR_PIN, OUTPUT);
 
   ledcSetup(channel11, freq, resolution);
   ledcSetup(channel12, freq, resolution);
@@ -76,6 +86,7 @@ void loop() {
   //test1();
   //test2();
   //test3();
+  //test4();
 
   Dabble.processInput();
 
@@ -115,8 +126,16 @@ void loop() {
     stopped();
   }
 
-  int joystick_ang = GamePad.getAngle();
-  int joystick_rad = GamePad.getRadius();
+  if (GamePad.isTrianglePressed()){
+    forkliftUp();
+  }
+
+  if (GamePad.isCrossPressed()){
+    forkliftDown();
+  }
+
+  joystick_ang = GamePad.getAngle();
+  joystick_rad = GamePad.getRadius();
 
   if (joystick_rad>3){
     if (joystick_ang<30){
@@ -173,7 +192,7 @@ void loop() {
       delay(350);
       stopped();
     }
-  }
+  }//*/
 }
 
 void test1(){
@@ -225,6 +244,27 @@ void test3(){
   delay(1500);
   stopped();
   delay(1500);
+}
+
+void test4(){
+  // Goes Down 8 mm (200 steps)
+  digitalWrite(DIR_PIN, HIGH);
+  for (int i = 0; i < 200; i++){
+    digitalWrite(STEP_PIN, HIGH);
+    delayMicroseconds(1000);
+    digitalWrite(STEP_PIN, LOW);
+    delayMicroseconds(1000);
+  }
+  delay(2000);
+  // Goes Up 8 mm (200 steps)
+  digitalWrite(DIR_PIN, LOW);
+  for (int i = 0; i < 200; i++){
+    digitalWrite(STEP_PIN, HIGH);
+    delayMicroseconds(1000);
+    digitalWrite(STEP_PIN, LOW);
+    delayMicroseconds(1000);
+  }
+  delay(2000);
 }
 
 void stopped(){
@@ -291,4 +331,28 @@ void setPWMs(int pwms[8]){
   ledcWrite(channel22, pwms[5]);
   ledcWrite(channel23, pwms[6]);
   ledcWrite(channel24, pwms[7]);
+}
+
+void forkliftUp(){
+  // Goes Up 8 mm (200 steps)
+  digitalWrite(DIR_PIN, LOW);
+  for (int i = 0; i < 200; i++){
+    digitalWrite(STEP_PIN, HIGH);
+    delayMicroseconds(1000);
+    digitalWrite(STEP_PIN, LOW);
+    delayMicroseconds(1000);
+  }
+  delay(50);
+}
+
+void forkliftDown(){
+  // Goes Down 8 mm (200 steps)
+  digitalWrite(DIR_PIN, HIGH);
+  for (int i = 0; i < 200; i++){
+    digitalWrite(STEP_PIN, HIGH);
+    delayMicroseconds(1000);
+    digitalWrite(STEP_PIN, LOW);
+    delayMicroseconds(1000);
+  }
+  delay(50);
 }
