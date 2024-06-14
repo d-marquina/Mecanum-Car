@@ -59,6 +59,8 @@ void setup() {
   pinMode(STEP_PIN, OUTPUT);
   pinMode(DIR_PIN, OUTPUT);
 
+  Serial.begin(115200);
+
   ledcSetup(channel11, freq, resolution);
   ledcSetup(channel12, freq, resolution);
   ledcSetup(channel13, freq, resolution);
@@ -80,6 +82,7 @@ void setup() {
   setPWMs(init_pwms);
 
   Dabble.begin("Mecanum Car"); //set bluetooth name of your device
+
 }
 
 void loop() {
@@ -91,12 +94,14 @@ void loop() {
   Dabble.processInput();
 
   if (GamePad.isUpPressed()){
+    Serial.println("Up");
     forward();
     delay(350);
     stopped();
   }
 
   if (GamePad.isDownPressed()){
+    Serial.println("Down");
     backwards();
     delay(350);
     stopped();
@@ -115,12 +120,14 @@ void loop() {
   }
 
   if (GamePad.isSquarePressed()){
+    Serial.println("Square");
     ccw();
     delay(150);
     stopped();
   }
 
   if (GamePad.isCirclePressed()){
+    Serial.println("Circle");
     cw();
     delay(150);
     stopped();
